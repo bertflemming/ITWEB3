@@ -8,7 +8,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const app = express();
-const API_PORT = process.env.API_PORT || 4000;
 
 // Require all mongoose models
 const models = join(__dirname, '/backend/models');
@@ -30,7 +29,6 @@ app.use(passport.initialize());
 //app.use(express.static('./dist/itweb3'));
 
 require('./backend/config/routes')(app);
-
-app.listen(API_PORT, () => console.log('Listening on: ' + API_PORT));
+require('./backend/config/websocket')(app);
 
 module.exports = app;
