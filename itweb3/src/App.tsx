@@ -18,6 +18,7 @@ export interface IState {
   gameRunning: boolean;
   gridSize: number;
   score: number;
+  dataFromServer: String;
 }
 
 class App extends React.Component<{}, IState> {
@@ -29,6 +30,7 @@ class App extends React.Component<{}, IState> {
       gameRunning: false,
       gridSize: 3,
       score: 0,
+      dataFromServer: "",
     };
 
     this.setGridSize = this.setGridSize.bind(this);
@@ -36,6 +38,28 @@ class App extends React.Component<{}, IState> {
     this.onPause = this.onPause.bind(this);
     this.onScoreChange = this.onScoreChange.bind(this);
   }
+
+  ws = new WebSocket('ws://localhost:4000')
+
+  componentDidMount() {
+    this.ws.onopen = () => {
+    // on connecting, do nothing but log it to the console
+    console.log('connected')
+    }
+
+    this.ws.onmessage = evt => {
+    // listen to data sent from the websocket server
+    const message = JSON.parse(evt.data)
+    this.setState({dataFromServer: message})
+    console.log(message)
+    }
+
+    this.ws.onclose = () => {
+    console.log('disconnected')
+    // automatically try to reconnect on connection loss
+    }
+
+}
 
   public render() {
     return (
@@ -69,7 +93,7 @@ class App extends React.Component<{}, IState> {
               <input type="range" min="3" max="5" className="slider" value={this.state.gridSize} onInput={this.setGridSize} onChange={this.setGridSize} />
             </Col>
             <Col xs="6">
-              <Game rows={this.state.gridSize} columns={this.state.gridSize} running={this.state.gameRunning} onScoreChange={this.onScoreChange} />
+              <Game rows={this.state.gridSize} columns={this.state.gridSize} running={this.state.gameRunning} onScoreChange={this.onScoreChange} websocket={this.ws} />
             </Col>
             <Col xs="3">
               <Row>
