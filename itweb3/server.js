@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const app = express();
-const API_PORT = process.env.API_PORT || 3000;
+const API_PORT = process.env.API_PORT || 4000;
 
 // Require all mongoose models
 const models = join(__dirname, '/backend/models');
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
 app.use(passport.initialize());
-app.use(express.static('./dist/itweb3'));
+//app.use(express.static('./dist/itweb3'));
 
 require('./backend/config/routes')(app);
 

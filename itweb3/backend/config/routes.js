@@ -6,8 +6,6 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const path = require('path');
 const User = mongoose.model('User');
-const Workout = mongoose.model('Workout');
-const Activity = mongoose.model('Activity');
 const secret = process.env.SECRET || 'hemmelige_hest';
 
 module.exports = app => {
@@ -69,9 +67,5 @@ module.exports = app => {
                 });
             }
         })(req, res, next);
-    });
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve('dist/itweb3/index.html'));
     });
 };
