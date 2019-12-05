@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
 app.use(passport.initialize());
-app.use(express.static('./dist/FitnessApp2Group15'));
+app.use(express.static('./dist/itweb3'));
 
 require('./backend/config/routes')(app);
 

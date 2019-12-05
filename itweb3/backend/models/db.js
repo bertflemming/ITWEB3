@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require( 'mongoose' );
-const dbURI = process.env.MONGO_DB || 'mongodb://localhost/SecondFitnessApp';
+const dbURI = process.env.MONGO_DB || 'mongodb://localhost/DualNBack';
 
 mongoose.connect(dbURI);
 
