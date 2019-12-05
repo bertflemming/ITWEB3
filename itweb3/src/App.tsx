@@ -1,18 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as React from 'react';
-import { Button, Col, Container, Row, NavLink } from 'reactstrap';
+import { Button, Col, Container, Row } from 'reactstrap';
 import './App.css';
 import Game from './Game';
 import Register from './Register';
 import Login from './Login';
+import HighscorePage from './Highscores';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Link
 } from 'react-router-dom';
-
-import logo from './logo.svg';
 
 export interface IState {
   gameRunning: boolean;
@@ -47,6 +46,7 @@ class App extends React.Component<{}, IState> {
             <Link to="/">Home</Link>
             <Link to="/register">Register</Link>
             <Link to="/login">Login</Link>
+            <Link to="/highscores">Highscores</Link>
         </ul>
 
         <hr />
@@ -58,6 +58,9 @@ class App extends React.Component<{}, IState> {
           </Route>
           <Route path="/login">
               <Login/>            
+          </Route>
+          <Route path="/highscores">
+              <HighscorePage/>            
           </Route>
         </Switch>
       </div>

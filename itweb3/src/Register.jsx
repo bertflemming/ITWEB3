@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { userService } from './UserService';
 
 class RegisterPage extends React.Component {
     constructor(props) {
@@ -41,30 +42,10 @@ class RegisterPage extends React.Component {
 
     register(user){
         console.log(user);
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
-        };
-    
-        return fetch('/user/register', requestOptions).then(this.handleResponse);
-    }
-
-    handleResponse(response) {
-        return response.text().then(text => {
-            const data = text && JSON.parse(text);
-            if (!response.ok) {
-    
-                const error = (data && data.message) || response.statusText;
-                return Promise.reject(error);
-            }
-    
-            return data;
-        });
+        userService.register(user);
     }
 
     render() {
-        const { registering  } = this.props;
         const { user, submitted } = this.state;
         return (
             <div className="col-md-6 col-md-offset-3">
