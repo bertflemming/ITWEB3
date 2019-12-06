@@ -8,6 +8,10 @@ const HighScoreSchema = new Schema({
       type: Number,
       required: true
   },
+  n: {
+    type: Number,
+    required: true
+  },
   user: {type: Schema.ObjectId, ref: 'User'},
 });
 

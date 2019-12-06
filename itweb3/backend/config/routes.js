@@ -72,10 +72,28 @@ module.exports = router => {
     router.ws('/', (ws, req) => {
         ws.on('message', (msg) => {
           console.log('Message received: '+msg);
-          if(msg === 'HS'){
-            ws.send(JSON.stringify([9,8,7,6,5]));
+          if(msg.split(' ').length === 2){
+                console.log('Highscores for n: ' + msg.split(' ')[1]);
+                ws.send(JSON.stringify(['rune:9','tobias:8','nickolai:7','hestefar:6','noob:5']));
           } else {
-              console.log('saved HS');
+                console.log('saved HS');
+                let jwtPayload = msg.split(';')[0];
+                let n = msg.split(';')[1];
+                let score = msg.split(';')[2];
+                try{
+                    let _id = mongoose.mongo.ObjectId(jwtPayload.id);
+                    User.findOne({ _id }).then(user => {
+                        if (user) {
+                            console.log('User found in database');
+                            done(null, user);
+                        } else {
+                            console.log('User not found in database');
+                            done(null, false);
+                        }
+                    });
+                } catch(err) {
+                    done(err);
+                }
           }
           
         });
