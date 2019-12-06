@@ -75,7 +75,7 @@ class App extends React.Component<{}, IState> {
               <Login/>            
           </Route>
           <Route path="/logout">
-              {userService.logout}        
+              {userService.logout}     
           </Route>
           <Route path="/highscores">
               <HighscorePage websocket={this.state.ws}/>            
