@@ -76,10 +76,14 @@ module.exports = router => {
           console.log('Message received: '+msg);
           if(msg.split(' ').length === 2){
                 let n = parseInt(msg.split(' ')[1]);
-                var q = Highscore.find({ n: n}).sort({score}).limit(10);
+                var query = Highscore.find({ n: n}).sort({'score':-1}).limit(10);
+                let qs = [];
+                query.forEach(q => {
+                    qs.add[q.score];
+                });
                 console.log('Highscores for n: ' + msg.split(' ')[1]);
-                console.log(q);
-                ws.send(JSON.stringify(['rune:9','tobias:8','nickolai:7','hestefar:6','noob:5']));
+                console.log(qs);
+                ws.send(JSON.stringify(qs));
           } else {
                 let jwtString = msg.split(';')[0].split('.')[1];
                 let jwtPayload = JSON.parse(atob(jwtString));
