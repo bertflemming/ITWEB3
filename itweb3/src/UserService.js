@@ -10,10 +10,10 @@ function login(username, password) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ email: username, password: password })
     };
 
-    return fetch('/user/login', requestOptions)
+    return fetch('api/user/login', requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -35,7 +35,7 @@ function register(user) {
         body: JSON.stringify(user)
     };
 
-    return fetch('/user/register', requestOptions).then(handleResponse);
+    return fetch('api/user/register', requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
@@ -61,14 +61,17 @@ function getUser(){
 }
 
 function isLoggedIn(){
-    const user = getUser();
-    if(user)
-        if(user.token){
-            let payload = user.token.split('.')[1];
+    const user = JSON.parse(getUser());
+    if(user){
+        const token = user.token;
+        if(token){
+            let payload = token.split('.')[1];
             payload = window.atob(payload);
             let user = JSON.parse(payload);
+            console.log(user.exp)
             return (user.exp > Date.now() / 1000);
         }
+    }
     return false;
 }
 

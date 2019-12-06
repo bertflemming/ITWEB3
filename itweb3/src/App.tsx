@@ -5,6 +5,7 @@ import Register from './Register';
 import Login from './Login';
 import HighscorePage from './Highscores';
 import GameView from './GameView';
+import {userService} from './UserService';
 import {
     BrowserRouter as Router,
     Switch,
@@ -22,7 +23,7 @@ class App extends React.Component<{}, IState> {
     super(props);
 
     this.state = {
-      ws: new WebSocket('ws://localhost:4000/ws'),
+      ws: new WebSocket('ws://localhost:4000/api'),
     };
   }
 
@@ -31,7 +32,7 @@ class App extends React.Component<{}, IState> {
     }
 
   connect(){
-    var ws = new WebSocket('ws://localhost:4000/ws');
+    var ws = new WebSocket('ws://localhost:4000/api');
     
     ws.onopen = () => {
       console.log('websocket connected');
@@ -58,6 +59,7 @@ class App extends React.Component<{}, IState> {
             <Link to="/">Game</Link>
             <Link to="/register">Register</Link>
             <Link to="/login">Login</Link>
+            <Link to="/logout">Logout</Link>
             <Link to="/highscores">Highscores</Link>
         </ul>
 
@@ -71,6 +73,9 @@ class App extends React.Component<{}, IState> {
           </Route>
           <Route path="/login">
               <Login/>            
+          </Route>
+          <Route path="/logout">
+              {userService.logout}        
           </Route>
           <Route path="/highscores">
               <HighscorePage websocket={this.state.ws}/>            
