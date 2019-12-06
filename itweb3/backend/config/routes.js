@@ -77,7 +77,8 @@ module.exports = router => {
                 ws.send(JSON.stringify(['rune:9','tobias:8','nickolai:7','hestefar:6','noob:5']));
           } else {
                 console.log('saved HS');
-                let jwtPayload = msg.split(';')[0];
+                let jwtString = msg.split(';')[0].split('.')[1];
+                let jwtPayload = JSON.parse(window.atob(jwtString));
                 console.log(jwtPayload);
                 let n = msg.split(';')[1];
                 console.log(n);
