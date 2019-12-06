@@ -9,13 +9,11 @@ export interface IProps {
     onScoreChange?: (prevScore: number, nextScore: number) => void;
     rows: number;
     running: boolean;
-    websocket: WebSocket;
 }
 
 export interface IState {
     board: Board;
     currentFlash?: Flash;
-    websocket: WebSocket;
 }
 
 class Game extends React.Component<IProps, IState> {
@@ -46,7 +44,6 @@ class Game extends React.Component<IProps, IState> {
         this.state = {
             board: new Board(this.props.rows, this.props.columns),
             currentFlash: undefined,
-            websocket: this.props.websocket
         }
 
         this.tryPosition = this.tryPosition.bind(this);

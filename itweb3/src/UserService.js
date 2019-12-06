@@ -13,7 +13,7 @@ function login(username, password) {
         body: JSON.stringify({ username, password })
     };
 
-    return fetch('/users/authenticate', requestOptions)
+    return fetch('/user/login', requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -35,7 +35,7 @@ function register(user) {
         body: JSON.stringify(user)
     };
 
-    return fetch('/users/register', requestOptions).then(handleResponse);
+    return fetch('/user/register', requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
@@ -56,19 +56,20 @@ function handleResponse(response) {
 }
 
 function getUser(){
-  let token = localStorage.getItem('user');
-  return token;
+  let user = localStorage.getItem('user');
+  return user;
 }
 
 function isLoggedIn(){
-  const user = getUser();
-  if(user.token){
-    let payload = user.token.split('.')[1];
-    payload = window.atob(payload);
-    let user = JSON.parse(payload);
-    return (user.exp > Date.now() / 1000);
-  }
-  return false;
+    const user = getUser();
+    if(user)
+        if(user.token){
+            let payload = user.token.split('.')[1];
+            payload = window.atob(payload);
+            let user = JSON.parse(payload);
+            return (user.exp > Date.now() / 1000);
+        }
+    return false;
 }
 
 function getHighScores(){
