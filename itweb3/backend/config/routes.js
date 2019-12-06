@@ -6,6 +6,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const path = require('path');
 const User = mongoose.model('User');
+const Highscore = mongoose.model('HighScore');
 const secret = process.env.SECRET || 'hemmelige_hest';
 const atob = require('atob');
 
@@ -91,6 +92,19 @@ module.exports = router => {
                         if (user) {
                             console.log('User found in database');
                             console.log(user);
+                            var highscore = new Highscore({
+                                score: score,
+                                n: n,
+                                user: _id,
+                            });
+                            highscore.save(function (err){
+                                if (err){
+                                    console.log('Highscore was NOT saved');
+                                }
+                                else {
+                                    console.log('Highscore was saved');
+                                }
+                            });
                             // done(null, user);
                         } else {
                             console.log('User not found in database');
