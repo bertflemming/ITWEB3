@@ -78,8 +78,11 @@ module.exports = router => {
           } else {
                 console.log('saved HS');
                 let jwtPayload = msg.split(';')[0];
+                console.log(jwtPayload);
                 let n = msg.split(';')[1];
+                console.log(n);
                 let score = msg.split(';')[2];
+                console.log(score);
                 try{
                     let _id = mongoose.mongo.ObjectId(jwtPayload.id);
                     User.findOne({ _id }).then(user => {
