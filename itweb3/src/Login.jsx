@@ -45,7 +45,7 @@ class LoginPage extends React.Component {
             body: JSON.stringify(user)
         };
     
-        return fetch('/user/login', requestOptions).then(this.handleResponse);
+        return fetch('http://localhost:4000/user/login', requestOptions).then(this.handleResponse);
     }
 
     handleResponse(response) {
