@@ -12,7 +12,10 @@ const HighScoreSchema = new Schema({
     type: Number,
     required: true
   },
-  user: {type: Schema.ObjectId, ref: 'User'},
+  user: {
+    type: String,
+    required: true
+  },
 });
 
 // Inject to mongoose models
