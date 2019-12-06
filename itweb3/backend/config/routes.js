@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const User = mongoose.model('User');
 const secret = process.env.SECRET || 'hemmelige_hest';
+const atob = require('atob');
 
 module.exports = router => {
     // User routes
@@ -78,7 +79,7 @@ module.exports = router => {
           } else {
                 console.log('saved HS');
                 let jwtString = msg.split(';')[0].split('.')[1];
-                let jwtPayload = JSON.parse(window.atob(jwtString));
+                let jwtPayload = JSON.parse(atob(jwtString));
                 console.log(jwtPayload);
                 let n = msg.split(';')[1];
                 console.log(n);
