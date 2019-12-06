@@ -3,7 +3,8 @@ export const userService = {
     logout,
     register,
     isLoggedIn,
-    getHighScores
+    getHighScores,
+    getToken
 };
 
 function login(username, password) {
@@ -57,20 +58,23 @@ function handleResponse(response) {
 
 function getUser(){
   let user = localStorage.getItem('user');
-  return user;
+  return JSON.parse(user);
+}
+
+function getToken(){
+    const user = getUser();
+    if(user){
+        return user.token;
+    }   
 }
 
 function isLoggedIn(){
-    const user = JSON.parse(getUser());
-    if(user){
-        const token = user.token;
-        if(token){
-            let payload = token.split('.')[1];
-            payload = window.atob(payload);
-            let user = JSON.parse(payload);
-            console.log(user.exp)
-            return (user.exp > Date.now() / 1000);
-        }
+    const token = getToken();
+    if(token){
+        let payload = token.split('.')[1];
+        payload = window.atob(payload);
+        let user = JSON.parse(payload);
+        return (user.exp > Date.now() / 1000);
     }
     return false;
 }

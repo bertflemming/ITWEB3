@@ -8,7 +8,8 @@ export interface IProps {
 
 export interface IState {
     websocket: WebSocket;
-    scores: number[];
+    scores: string[];
+    n: number;
 }
 
 class HighscorePage extends React.Component<IProps, IState> {
@@ -16,8 +17,11 @@ class HighscorePage extends React.Component<IProps, IState> {
         super(props);
         this.state = {
             websocket: this.props.websocket,
-            scores: userService.getHighScores()
+            scores: ['','','','',''],
+            n: 1
         };
+
+        this.setN = this.setN.bind(this);
     }
 
     componentDidMount(){
@@ -25,19 +29,19 @@ class HighscorePage extends React.Component<IProps, IState> {
     }
 
     connect(){
-        this.state.websocket.send('HS');
+        this.state.websocket.send('HS '+ this.state.n);
 
         this.state.websocket.onmessage = m => {
-          console.log('highscores received');
-          this.setState({scores: (JSON.parse(m.data))});
-          this.render();
+            this.setState({scores: (JSON.parse(m.data))});
+            this.render();
         }
-    
     }
 
     render() {
         return (
             <div>
+                <input type="range" min="1" max="20" className="slider" value={this.state.n} onInput={this.setN} onChange={this.setN} />
+                <p>n: {this.state.n}</p>
                 <ol>
                     {this.state.scores.map(s => <li>{s}</li>)}
                 </ol>
@@ -45,6 +49,11 @@ class HighscorePage extends React.Component<IProps, IState> {
 
         );
     }
+
+    private setN(e: any) {
+        this.setState({ n: e.target.value });
+        this.connect();
+      }
 }
 
 export default HighscorePage;

@@ -6,7 +6,9 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const path = require('path');
 const User = mongoose.model('User');
+const Highscore = mongoose.model('HighScore');
 const secret = process.env.SECRET || 'hemmelige_hest';
+const atob = require('atob');
 
 module.exports = router => {
     // User routes
@@ -72,10 +74,49 @@ module.exports = router => {
     router.ws('/', (ws, req) => {
         ws.on('message', (msg) => {
           console.log('Message received: '+msg);
-          if(msg === 'HS'){
-            ws.send(JSON.stringify([9,8,7,6,5]));
+          if(msg.split(' ').length === 2){
+                let n = parseInt(msg.split(' ')[1]);
+                var query = Highscore.find({ n: n}).sort({'score':-1}).limit(10).then(function(scores) {
+                    let reply = []
+                    scores.forEach(s => {
+                        reply.push(s.user + " " + s.score);
+                    });
+                    console.log(reply);
+                    ws.send(JSON.stringify(reply));
+                });
           } else {
-              console.log('saved HS');
+                let jwtString = msg.split(';')[0].split('.')[1];
+                let jwtPayload = JSON.parse(atob(jwtString));
+                let n = msg.split(';')[1];
+                let score = msg.split(';')[2];
+                try{
+                    let _id = mongoose.mongo.ObjectId(jwtPayload.id);
+                    User.findOne({ _id }).then(user => {
+                        if (user) {
+                            console.log('User found in database');
+                            console.log(user);
+                            var highscore = new Highscore({
+                                score: score,
+                                n: n,
+                                user: user.name,
+                            });
+                            highscore.save(function (err){
+                                if (err){
+                                    console.log('Highscore was NOT saved');
+                                }
+                                else {
+                                    console.log('Highscore was saved');
+                                }
+                            });
+                            // done(null, user);
+                        } else {
+                            console.log('User not found in database');
+                            // done(null, false);
+                        }
+                    });
+                } catch(err) {
+                    done(err);
+                }
           }
           
         });

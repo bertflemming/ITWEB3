@@ -1,5 +1,6 @@
 import React from 'react';
 import {userService} from './UserService';
+import {Redirect} from 'react-router-dom';
 
 class LoginPage extends React.Component {
     constructor(props) {
