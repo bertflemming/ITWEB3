@@ -68,7 +68,6 @@ function isLoggedIn(){
             let payload = token.split('.')[1];
             payload = window.atob(payload);
             let user = JSON.parse(payload);
-            console.log(user.exp)
             return (user.exp > Date.now() / 1000);
         }
     }
