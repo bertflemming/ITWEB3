@@ -16,6 +16,8 @@ export interface IState {
     board: Board;
     currentFlash?: Flash;
     turn: number;
+    positionClicked: boolean;
+    soundClicked: boolean;
 }
 
 class Game extends React.Component<IProps, IState> {
@@ -59,6 +61,8 @@ class Game extends React.Component<IProps, IState> {
             board: new Board(this.props.rows, this.props.columns, this.props.n),
             currentFlash: undefined,
             turn: 29,
+            positionClicked: false,
+            soundClicked: false,
         }
 
         this.tryPosition = this.tryPosition.bind(this);
@@ -105,11 +109,17 @@ class Game extends React.Component<IProps, IState> {
     }
 
     private tryPosition() {
-        this.state.board.samePosition();
+        if(!this.state.positionClicked){
+            this.state.board.samePosition();
+            this.setState({positionClicked: true})
+        }
     }
 
     private trySound() {
-        this.state.board.sameSound();
+        if(!this.state.soundClicked){
+            this.state.board.sameSound();
+            this.setState({soundClicked: true})
+        }
     }
 
     private onFlash(newFlash: Flash) {
@@ -121,6 +131,9 @@ class Game extends React.Component<IProps, IState> {
             var oldTurn = this.state.turn;
             this.setState({turn: Number(oldTurn)-1})
             console.log("turn: " + this.state.turn);
+            this.setState({positionClicked: false})
+            this.setState({soundClicked: false})
+            
         }
     }
 
