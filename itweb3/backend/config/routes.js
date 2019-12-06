@@ -77,8 +77,12 @@ module.exports = router => {
           if(msg.split(' ').length === 2){
                 let n = parseInt(msg.split(' ')[1]);
                 var query = Highscore.find({ n: n}).sort({'score':-1}).limit(10).then(function(scores) {
-                    console.log(scores);
-                    ws.send(JSON.stringify(scores));
+                    let reply = []
+                    scores.forEach(s => {
+                        reply.add(s.score);
+                    });
+                    console.log(reply);
+                    ws.send(JSON.stringify(reply));
                 });
           } else {
                 let jwtString = msg.split(';')[0].split('.')[1];
