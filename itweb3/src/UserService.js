@@ -61,14 +61,17 @@ function getUser(){
 }
 
 function isLoggedIn(){
-    const user = getUser();
-    if(user)
-        if(user.token){
-            let payload = user.token.split('.')[1];
+    const user = JSON.parse(getUser());
+    if(user){
+        const token = user.token;
+        if(token){
+            let payload = token.split('.')[1];
             payload = window.atob(payload);
             let user = JSON.parse(payload);
+            console.log(user.exp)
             return (user.exp > Date.now() / 1000);
         }
+    }
     return false;
 }
 
