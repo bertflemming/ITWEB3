@@ -88,10 +88,11 @@ module.exports = router => {
                     User.findOne({ _id }).then(user => {
                         if (user) {
                             console.log('User found in database');
-                            done(null, user);
+                            console.log(user);
+                            // done(null, user);
                         } else {
                             console.log('User not found in database');
-                            done(null, false);
+                            // done(null, false);
                         }
                     });
                 } catch(err) {
