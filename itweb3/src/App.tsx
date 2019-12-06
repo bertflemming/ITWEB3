@@ -18,6 +18,7 @@ export interface IState {
   gridSize: number;
   score: number;
   dataFromServer: String;
+  ws: WebSocket;
 }
 
 class App extends React.Component<{}, IState> {
@@ -30,6 +31,7 @@ class App extends React.Component<{}, IState> {
       gridSize: 3,
       score: 0,
       dataFromServer: "",
+      ws: new WebSocket('ws://localhost:4000/ws')
     };
 
     this.setGridSize = this.setGridSize.bind(this);
@@ -38,27 +40,34 @@ class App extends React.Component<{}, IState> {
     this.onScoreChange = this.onScoreChange.bind(this);
   }
 
-  ws = new WebSocket('ws://localhost:4000')
-
   componentDidMount() {
-    this.ws.onopen = () => {
-    // on connecting, do nothing but log it to the console
-    console.log('connected')
+    this.connect();
     }
 
-    this.ws.onmessage = evt => {
-    // listen to data sent from the websocket server
-    const message = JSON.parse(evt.data)
-    this.setState({dataFromServer: message})
-    console.log(message)
+  connect(){
+    var ws = new WebSocket('ws://localhost:4000/ws');
+    
+    ws.onopen = () => {
+      console.log('websocket connected');
+      this.setState({ws: ws});
     }
 
-    this.ws.onclose = () => {
-    console.log('disconnected')
-    // automatically try to reconnect on connection loss
+    ws.onclose = e => {
+      console.log('websocket closed: '+e.reason);
     }
 
-}
+    ws.onerror = err => {
+      console.error("websocket error: " + err.timeStamp);
+      ws.close();
+    }
+  }
+
+  saveHighscore() {
+    this.check();
+    const { ws } = this.state;
+    this.state.ws.send(this.state.score.toString());
+    ws.send(this.state.score.toString());
+  };
 
   public render() {
     return (
@@ -84,7 +93,7 @@ class App extends React.Component<{}, IState> {
               <Login/>            
           </Route>
           <Route path="/highscores">
-              <HighscorePage/>            
+              <HighscorePage websocket={this.state.ws}/>            
           </Route>
         </Switch>
       </div>
@@ -96,13 +105,14 @@ class App extends React.Component<{}, IState> {
               <input type="range" min="3" max="5" className="slider" value={this.state.gridSize} onInput={this.setGridSize} onChange={this.setGridSize} />
             </Col>
             <Col xs="6">
-              <Game rows={this.state.gridSize} columns={this.state.gridSize} running={this.state.gameRunning} onScoreChange={this.onScoreChange} websocket={this.ws} />
+              <Game rows={this.state.gridSize} columns={this.state.gridSize} running={this.state.gameRunning} onScoreChange={this.onScoreChange} websocket={this.state.ws} />
             </Col>
             <Col xs="3">
               <Row>
                 <Col xs="12">
                   <Button color="primary" className={this.state.gameRunning ? 'hidden' : ''} onClick={this.onPlay}>Play</Button>
                   <Button color="primary" className={!this.state.gameRunning ? 'hidden' : ''} onClick={this.onPause}>Pause</Button>
+                  <Button color="primary" onClick={this.saveHighscore}>Save Highscore</Button>
                 </Col>
               </Row>
               <Row>
@@ -114,6 +124,11 @@ class App extends React.Component<{}, IState> {
       </div>
     );
   }
+
+  private check(){
+    const { ws } = this.state;
+    if (!ws || ws.readyState === WebSocket.CLOSED) this.connect();
+  };
 
   private setGridSize(e: any) {
     this.setState({ gridSize: e.target.value });
@@ -130,6 +145,7 @@ class App extends React.Component<{}, IState> {
   private onScoreChange(prevScore: number, nextScore: number) {
     this.setState({ score: nextScore });
   }
+
 }
 
 export default App;

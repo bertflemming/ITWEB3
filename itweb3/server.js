@@ -29,6 +29,6 @@ app.use(passport.initialize());
 //app.use(express.static('./dist/itweb3'));
 
 require('./backend/config/routes')(app);
-require('./backend/config/websocket')(app);
+require('./backend/config/websocket');
 
 module.exports = app;
