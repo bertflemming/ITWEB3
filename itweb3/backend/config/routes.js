@@ -71,7 +71,13 @@ module.exports = router => {
 
     router.ws('/', (ws, req) => {
         ws.on('message', (msg) => {
-          console.log(msg);
+          console.log('Message received: '+msg);
+          if(msg === 'HS'){
+            ws.send(JSON.stringify([9,8,7,6,5]));
+          } else {
+              console.log('saved HS');
+          }
+          
         });
     });
 };

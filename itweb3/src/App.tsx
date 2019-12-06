@@ -22,7 +22,7 @@ class App extends React.Component<{}, IState> {
     super(props);
 
     this.state = {
-      ws: new WebSocket('ws://localhost:4000/ws'),
+      ws: new WebSocket('ws://localhost:4000/api'),
     };
   }
 
@@ -31,7 +31,7 @@ class App extends React.Component<{}, IState> {
     }
 
   connect(){
-    var ws = new WebSocket('ws://localhost:4000/ws');
+    var ws = new WebSocket('ws://localhost:4000/api');
     
     ws.onopen = () => {
       console.log('websocket connected');

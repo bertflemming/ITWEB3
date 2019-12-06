@@ -10,10 +10,10 @@ function login(username, password) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ email: username, password: password })
     };
 
-    return fetch('/user/login', requestOptions)
+    return fetch('api/user/login', requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -35,7 +35,7 @@ function register(user) {
         body: JSON.stringify(user)
     };
 
-    return fetch('/user/register', requestOptions).then(handleResponse);
+    return fetch('api/user/register', requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
