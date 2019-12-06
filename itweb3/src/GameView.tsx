@@ -85,7 +85,6 @@ class GameView extends React.Component<IProps, IState> {
   private onPlay(e: any) {
     this.setState({ gameRunning: true });
     this.setState({ score: 0 });
-    this.render();
   }
 
   private onStop(e: any) {

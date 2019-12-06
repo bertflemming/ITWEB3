@@ -15,6 +15,7 @@ export interface IProps {
 export interface IState {
     board: Board;
     currentFlash?: Flash;
+    turn: number;
 }
 
 class Game extends React.Component<IProps, IState> {
@@ -42,6 +43,12 @@ class Game extends React.Component<IProps, IState> {
             nextState.running = true;
         }
 
+        // if(prevState.turn === 0) {
+        //    prevState.board.stop();
+        //    nextState.board = new Board(nextProps.rows, nextProps.columns, nextProps.n);
+        //    nextState.running = false;
+       // }
+
         return nextState;
     }
 
@@ -51,6 +58,7 @@ class Game extends React.Component<IProps, IState> {
         this.state = {
             board: new Board(this.props.rows, this.props.columns, this.props.n),
             currentFlash: undefined,
+            turn: 29,
         }
 
         this.tryPosition = this.tryPosition.bind(this);
@@ -65,10 +73,13 @@ class Game extends React.Component<IProps, IState> {
 
     public componentDidUpdate(prevProps: IProps, prevState: IState, snapshot?: any) {
         if (!prevProps.running && this.props.running) {
+            console.log("1");
+            this.setState({turn: 29});
             this.state.board.start(this.onFlash);
         }
 
         if (prevProps.running && !this.props.running) {
+            console.log("2");
             this.state.board.stop();
         }
     }
@@ -76,11 +87,17 @@ class Game extends React.Component<IProps, IState> {
     public render() {
         const props: any = {};
         if (this.state.currentFlash) {
-            props.highlight = this.state.currentFlash.position;
+            if(this.props.running){
+                props.highlight = this.state.currentFlash.position;
+            }
+            else {
+                props.highlight = undefined;
+            }
         }
         return (
             <div>
-                <Grid rows={this.state.board.rows} columns={this.state.board.columns} running={this.props.running} {...props} />
+                <Grid rows={this.state.board.rows} columns={this.state.board.columns} {...props} />
+                <p>Turns remaining: {this.state.turn}</p>
                 <Button color="secondary" disabled={!this.props.running} onClick={this.tryPosition}>Position</Button>
                 <Button color="secondary" disabled={!this.props.running} onClick={this.trySound}>Sound</Button>
             </div>
@@ -96,8 +113,15 @@ class Game extends React.Component<IProps, IState> {
     }
 
     private onFlash(newFlash: Flash) {
-        this.setState({ currentFlash: newFlash });
-        this.speak(newFlash.sound.toString());
+        if(this.state.turn > 0) {
+            this.setState({ currentFlash: newFlash });
+            
+            this.speak(newFlash.sound.toString());
+
+            var oldTurn = this.state.turn;
+            this.setState({turn: Number(oldTurn)-1})
+            console.log("turn: " + this.state.turn);
+        }
     }
 
     private speak(text: string) {
