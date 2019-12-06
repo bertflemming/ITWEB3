@@ -33,7 +33,6 @@ class HighscorePage extends React.Component<IProps, IState> {
 
         this.state.websocket.onmessage = m => {
             this.setState({scores: (JSON.parse(m.data))});
-            this.render();
         }
     }
 
