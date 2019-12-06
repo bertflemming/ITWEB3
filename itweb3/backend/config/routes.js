@@ -79,10 +79,7 @@ module.exports = router => {
                 var query = Highscore.find({ n: n}).sort({'score':-1}).limit(10).then(function(scores) {
                     let reply = []
                     scores.forEach(s => {
-                        let _id = mongoose.mongo.ObjectId(s.user);
-                        User.findOne({ _id }).then(user => {
-                            reply.push(user.name + " " + s.score);
-                        })
+                        reply.push(User.findOne({_id: mongoose.mongo.ObjectId(s.user)}) + " " + s.score);
                     });
                     console.log(reply);
                     ws.send(JSON.stringify(reply));
