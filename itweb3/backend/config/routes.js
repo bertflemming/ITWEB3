@@ -75,17 +75,16 @@ module.exports = router => {
         ws.on('message', (msg) => {
           console.log('Message received: '+msg);
           if(msg.split(' ').length === 2){
+                let n = parseInt(msg.split(' ')[1]);
+                var q = Highscore.find({ n: n}).sort({score}).limit(10);
                 console.log('Highscores for n: ' + msg.split(' ')[1]);
+                console.log(q);
                 ws.send(JSON.stringify(['rune:9','tobias:8','nickolai:7','hestefar:6','noob:5']));
           } else {
-                console.log('saved HS');
                 let jwtString = msg.split(';')[0].split('.')[1];
                 let jwtPayload = JSON.parse(atob(jwtString));
-                console.log(jwtPayload);
                 let n = msg.split(';')[1];
-                console.log(n);
                 let score = msg.split(';')[2];
-                console.log(score);
                 try{
                     let _id = mongoose.mongo.ObjectId(jwtPayload.id);
                     User.findOne({ _id }).then(user => {
