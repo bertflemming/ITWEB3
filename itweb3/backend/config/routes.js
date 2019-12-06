@@ -77,12 +77,22 @@ module.exports = router => {
           if(msg.split(' ').length === 2){
                 let n = parseInt(msg.split(' ')[1]);
                 var query = Highscore.find({ n: n}).sort({'score':-1}).limit(10).then(function(scores) {
-                    let reply = []
+                    scores.forEach(s => {
+                        User.findOne({ _id: s.user}).then(user => {
+                            if (user) {
+                                console.log("found user");
+                            } else {
+                                console.log("failed");
+                            }
+                        });
+                    });
+                    /* let reply = []
                     scores.forEach(s => {
                         reply.push(User.findOne({_id: mongoose.mongo.ObjectId(s.user)}) + " " + s.score);
                     });
                     console.log(reply);
                     ws.send(JSON.stringify(reply));
+                    */ 
                 });
           } else {
                 let jwtString = msg.split(';')[0].split('.')[1];
