@@ -8,9 +8,9 @@ const path = require('path');
 const User = mongoose.model('User');
 const secret = process.env.SECRET || 'hemmelige_hest';
 
-module.exports = app => {
+module.exports = router => {
     // User routes
-    app.post('/user/register', (req, res, next) => {
+    router.post('/user/register', (req, res, next) => {
         passport.authenticate('register', (err, user, info) => {
             if (err) {
                 console.log(err);
@@ -43,7 +43,7 @@ module.exports = app => {
         })(req, res, next);
     });
 
-    app.post('/user/login', (req, res, next) => {
+    router.post('/user/login', (req, res, next) => {
         passport.authenticate('login', (err, user, info) => {
             if (err) {
                 console.log(err);
@@ -67,5 +67,11 @@ module.exports = app => {
                 });
             }
         })(req, res, next);
+    });
+
+    router.ws('/', (ws, req) => {
+        ws.on('message', (msg) => {
+          console.log(msg);
+        });
     });
 };
