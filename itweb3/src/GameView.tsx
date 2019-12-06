@@ -97,7 +97,7 @@ class GameView extends React.Component<IProps, IState> {
   }
 
   private saveHighscore(){
-    this.state.ws.send(this.state.score.toString()); 
+    this.state.ws.send(userService.getToken()+';'+this.state.n+';'+this.state.score.toString()); 
   }
 
 }
