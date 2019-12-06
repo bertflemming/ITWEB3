@@ -12,7 +12,8 @@ class Board {
 
     constructor(
         public readonly rows: number,
-        public readonly columns: number
+        public readonly columns: number,
+        public readonly n: number
     ) {
         this.history = [];
         this.score = 0;
@@ -34,17 +35,29 @@ class Board {
     }
 
     public samePosition() {
-        if (this.history.length > 1 && _.isEqual(this.history[this.history.length - 1].position, this.history[this.history.length - 2].position)) {
+        console.log("n: " + Number(this.n));
+        const indexToCompare = this.history.length - (Number(this.n) + 1);
+        if (this.history.length > Number(this.n) && _.isEqual(this.history[this.history.length - 1].position, this.history[indexToCompare].position)) {
             this.updateScore(100);
-        } else {
+            console.log("history.lenght: " + this.history.length);
+            console.log("(this.n + 1): " + (Number(this.n) + 1));
+            console.log("i: " + indexToCompare);
+        }
+        else {
             this.updateScore(-50);
         }
     }
 
     public sameSound() {
-        if (this.history.length > 1 && _.isEqual(this.history[this.history.length - 1].sound, this.history[this.history.length - 2].sound)) {
+        console.log("n: " + this.n);
+        const indexToCompare = this.history.length - (Number(this.n) + 1);
+        if (this.history.length > Number(this.n) && _.isEqual(this.history[this.history.length - 1].sound, this.history[indexToCompare].sound)) {
             this.updateScore(100);
-        } else {
+            console.log("history.lenght: " + this.history.length);
+            console.log("(this.n + 1): " + (Number(this.n) + 1));
+            console.log("i: " + indexToCompare);
+        }
+        else {
             this.updateScore(-50);
         }
     }

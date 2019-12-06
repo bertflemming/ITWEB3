@@ -9,6 +9,7 @@ export interface IProps {
     onScoreChange?: (prevScore: number, nextScore: number) => void;
     rows: number;
     running: boolean;
+    n: number;
 }
 
 export interface IState {
@@ -23,7 +24,13 @@ class Game extends React.Component<IProps, IState> {
 
         if (prevState.board.rows !== nextProps.rows || prevState.board.columns !== nextProps.columns) {
             prevState.board.stop();
-            nextState.board = new Board(nextProps.rows, nextProps.columns);
+            nextState.board = new Board(nextProps.rows, nextProps.columns, nextProps.n);
+            nextState.running = false;
+        }
+
+        if (prevState.board.n !== nextProps.n) {
+            prevState.board.stop();
+            nextState.board = new Board(nextProps.rows, nextProps.columns, nextProps.n);
             nextState.running = false;
         }
 
@@ -42,7 +49,7 @@ class Game extends React.Component<IProps, IState> {
         super(props);
 
         this.state = {
-            board: new Board(this.props.rows, this.props.columns),
+            board: new Board(this.props.rows, this.props.columns, this.props.n),
             currentFlash: undefined,
         }
 
@@ -73,7 +80,7 @@ class Game extends React.Component<IProps, IState> {
         }
         return (
             <div>
-                <Grid rows={this.state.board.rows} columns={this.state.board.columns} {...props} />
+                <Grid rows={this.state.board.rows} columns={this.state.board.columns} running={this.props.running} {...props} />
                 <Button color="secondary" disabled={!this.props.running} onClick={this.tryPosition}>Position</Button>
                 <Button color="secondary" disabled={!this.props.running} onClick={this.trySound}>Sound</Button>
             </div>
