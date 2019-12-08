@@ -43,9 +43,9 @@ class LoginPage extends React.Component {
 
     async login(user){
         console.log(user);
-        var msg = await userService.login(user.email, user.password);
-        this.setState({errorMessage: msg});
-        if(msg === 'Success'){
+        var res = await userService.login(user.email, user.password);
+        this.setState({errorMessage: res.message});
+        if(res.message === 'Success'){
             this.props.setLoggedIn();
         }
     }

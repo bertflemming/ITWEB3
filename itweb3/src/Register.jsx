@@ -45,9 +45,9 @@ class RegisterPage extends React.Component {
 
     async register(user){
         console.log(user);
-        var msg = await userService.register(user);
-        this.setState({errorMessage: msg});
-        if(msg === 'Success'){
+        var res = await userService.register(user);
+        this.setState({errorMessage: res.message});
+        if(res.message === 'Success'){
             this.setState({redirect: true})
         }
     }
