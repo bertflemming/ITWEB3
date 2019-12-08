@@ -78,7 +78,7 @@ class App extends React.Component<{}, IState> {
         <hr />
         <Switch>
           <Route exact path="/">
-            <GameView websocket={this.state.ws}/>
+            <GameView loggedIn={this.state.loggedIn} websocket={this.state.ws}/>
           </Route>
           <Route path="/register">
             <Register/>
