@@ -53,7 +53,7 @@ function handleResponse(response) {
         }
         return data;
     }).catch( e => {
-        return e;
+        return {message: e};
     });
 }
 
