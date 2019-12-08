@@ -6,6 +6,7 @@ import Login from './Login';
 import HighscorePage from './Highscores';
 import GameView from './GameView';
 import {userService} from './UserService';
+import Logout from './Logout';
 import {
     BrowserRouter as Router,
     Switch,
@@ -15,6 +16,7 @@ import {
 
 export interface IState {
   ws: WebSocket;
+  loggedIn: boolean;
 }
 
 class App extends React.Component<{}, IState> {
@@ -24,7 +26,10 @@ class App extends React.Component<{}, IState> {
 
     this.state = {
       ws: new WebSocket('ws://localhost:4000/api'),
+      loggedIn: false
     };
+
+    this.setLoggedIn = this.setLoggedIn.bind(this);
   }
 
   componentDidMount() {
@@ -49,6 +54,13 @@ class App extends React.Component<{}, IState> {
     }
   }
 
+  setLoggedIn(){
+    if(this.state.loggedIn){
+      userService.logout();
+    }
+    this.setState({loggedIn: !this.state.loggedIn});
+  }
+
   public render() {
     return (
       <div className="App">
@@ -56,26 +68,26 @@ class App extends React.Component<{}, IState> {
         <Router>
       <div>
         <ul>
-            <Link to="/">Game</Link>
-            <Link to="/register">Register</Link>
-            <Link to="/login">Login</Link>
-            <Link to="/logout">Logout</Link>
-            <Link to="/highscores">Highscores</Link>
+            <Link to="/" className="btn btn-link">Game</Link>
+            {this.state.loggedIn ? null : <Link to="/register" className="btn btn-link">Register</Link>}
+            {this.state.loggedIn ? null : <Link to="/login" className="btn btn-link">Login</Link>}
+            {this.state.loggedIn ? <Link to="/logout" className="btn btn-link">Logout</Link> : null}
+            <Link to="/highscores" className="btn btn-link">Highscores</Link>
         </ul>
 
         <hr />
         <Switch>
           <Route exact path="/">
-            <GameView websocket={this.state.ws}/>
+            <GameView loggedIn={this.state.loggedIn} websocket={this.state.ws}/>
           </Route>
           <Route path="/register">
             <Register/>
           </Route>
           <Route path="/login">
-              <Login/>            
+              <Login loggedIn={this.state.loggedIn} setLoggedIn={this.setLoggedIn}/>            
           </Route>
           <Route path="/logout">
-              {userService.logout}     
+              <Logout setLoggedIn={this.setLoggedIn}/>     
           </Route>
           <Route path="/highscores">
               <HighscorePage websocket={this.state.ws}/>            

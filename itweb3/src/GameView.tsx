@@ -6,8 +6,8 @@ import Game from './Game';
 import { userService } from './UserService';
 
 export interface IProps {
-
     websocket: WebSocket;
+    loggedIn: boolean;
 }
 
 export interface IState {
@@ -15,7 +15,7 @@ export interface IState {
   gridSize: number;
   score: number;
   ws: WebSocket;
-  isLoggedIn: boolean;
+  loggedIn: boolean;
   n: number;
 }
 
@@ -29,7 +29,7 @@ class GameView extends React.Component<IProps, IState> {
       gridSize: 3,
       score: 0,
       ws: this.props.websocket,
-      isLoggedIn: userService.isLoggedIn(),
+      loggedIn: props.loggedIn,
       n: 1
     };
 
@@ -60,7 +60,7 @@ class GameView extends React.Component<IProps, IState> {
                 <Col xs="12">
                   <Button color="primary" className={this.state.gameRunning ? 'hidden' : ''} onClick={this.onPlay}>Play</Button>
                   <Button color="primary" className={!this.state.gameRunning ? 'hidden' : ''} onClick={this.onStop}>Stop</Button>
-                  {this.state.isLoggedIn ? <Button color="primary" onClick={this.saveHighscore.bind(this)}>Save Highscore</Button> : <p>Log in to save highscore</p>}
+                  {this.state.loggedIn ? <Button color="primary" onClick={this.saveHighscore.bind(this)}>Save Highscore</Button> : <p>Log in to save highscore</p>}
                 </Col>
               </Row>
               <Row>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { userService } from './UserService';
 
 class RegisterPage extends React.Component {
@@ -12,9 +12,12 @@ class RegisterPage extends React.Component {
                 email: '',
                 password: ''
             },
-            submitted: false
+            submitted: false,
+            errorMessage: '',
+            redirect: false
         };
 
+        this.register = this.register.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -40,16 +43,29 @@ class RegisterPage extends React.Component {
         }
     }
 
-    register(user){
+    async register(user){
         console.log(user);
-        userService.register(user);
+        var res = await userService.register(user);
+
+        this.setState({errorMessage: res.message});
+        if(res.message === 'Success'){
+            this.setState({redirect: true})
+        }
+    }
+
+    renderRedirect(){
+        if(this.state.redirect){
+            return <Redirect to='/login' />
+        }
     }
 
     render() {
         const { user, submitted } = this.state;
         return (
             <div className="col-md-6 col-md-offset-3">
+                {this.renderRedirect()}
                 <h2>Register</h2>
+                <p>{this.state.errorMessage}</p>
                 <form name="form" onSubmit={this.handleSubmit}>
                     <div className={'form-group' + (submitted && !user.name ? ' has-error' : '')}>
                         <label htmlFor="name">Name</label>

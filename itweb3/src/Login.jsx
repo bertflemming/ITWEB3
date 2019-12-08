@@ -11,9 +11,11 @@ class LoginPage extends React.Component {
                 email: '',
                 password: ''
             },
-            submitted: false
+            submitted: false,
+            errorMessage: ''
         };
 
+        this.login = this.login.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -39,15 +41,27 @@ class LoginPage extends React.Component {
         }
     }
 
-    login(user){
+    async login(user){
         console.log(user);
-        userService.login(user.email, user.password);
+        var res = await userService.login(user.email, user.password);
+        this.setState({errorMessage: res.message});
+        if(res.message === 'Success'){
+            this.props.setLoggedIn();
+        }
+    }
+
+    renderRedirect(){
+        if(this.props.loggedIn){
+            return <Redirect to='/' />
+        }
     }
 
     render() {
         const { user, submitted } = this.state;
         return (
             <div className="col-md-6 col-md-offset-3">
+                {this.renderRedirect()}
+                <p>{this.state.errorMessage}</p>
                 <h2>Login</h2>
                 <form name="form" onSubmit={this.handleSubmit}>
                     <div className={'form-group' + (submitted && !user.email ? ' has-error' : '')}>

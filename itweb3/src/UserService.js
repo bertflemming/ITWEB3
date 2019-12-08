@@ -51,8 +51,9 @@ function handleResponse(response) {
             const error = (data && data.message) || response.statusText;
             return Promise.reject(error);
         }
-
         return data;
+    }).catch( e => {
+        return {message: e};
     });
 }
 
@@ -64,6 +65,7 @@ function getUser(){
 function getToken(){
     const user = getUser();
     if(user){
+        console.log(user.token);
         return user.token;
     }   
 }
