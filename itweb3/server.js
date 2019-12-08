@@ -7,6 +7,7 @@ const app = expressWs.app;
 const router = express.Router();
 const passport = require('passport');
 const join = require('path').join;
+const path = require('path');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -31,7 +32,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
 app.use(passport.initialize());
-//app.use(express.static('./dist/itweb3'));
+
+app.use(express.static(path.join(__dirname, 'build')));
 
 require('./backend/config/routes')(router);
 
