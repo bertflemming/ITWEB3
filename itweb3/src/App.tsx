@@ -32,6 +32,7 @@ class App extends React.Component<{}, IState> {
     this.setLoggedIn = this.setLoggedIn.bind(this);
   }
 
+  /*
   componentDidMount() {
     this.connect();
     }
@@ -53,7 +54,7 @@ class App extends React.Component<{}, IState> {
       ws.close();
     }
   }
-
+*/
   setLoggedIn(){
     if(this.state.loggedIn){
       userService.logout();
@@ -78,7 +79,7 @@ class App extends React.Component<{}, IState> {
         <hr />
         <Switch>
           <Route exact path="/">
-            <GameView loggedIn={this.state.loggedIn} websocket={this.state.ws}/>
+            <GameView loggedIn={this.state.loggedIn}/>
           </Route>
           <Route path="/register">
             <Register/>
@@ -90,7 +91,7 @@ class App extends React.Component<{}, IState> {
               <Logout setLoggedIn={this.setLoggedIn}/>     
           </Route>
           <Route path="/highscores">
-              <HighscorePage websocket={this.state.ws}/>            
+              <HighscorePage/>            
           </Route>
         </Switch>
       </div>

@@ -4,9 +4,10 @@ import { Button, Col, Container, Row } from 'reactstrap';
 import './App.css';
 import Game from './Game';
 import { userService } from './UserService';
+import { timeout } from 'q';
 
 export interface IProps {
-    websocket: WebSocket;
+    //websocket: WebSocket;
     loggedIn: boolean;
 }
 
@@ -14,9 +15,10 @@ export interface IState {
   gameRunning: boolean;
   gridSize: number;
   score: number;
-  ws: WebSocket;
+  //ws: WebSocket;
   loggedIn: boolean;
   n: number;
+  connected: boolean;
 }
 
 class GameView extends React.Component<IProps, IState> {
@@ -28,9 +30,10 @@ class GameView extends React.Component<IProps, IState> {
       gameRunning: false,
       gridSize: 3,
       score: 0,
-      ws: this.props.websocket,
+      //ws: this.props.websocket,
       loggedIn: props.loggedIn,
-      n: 1
+      n: 1,
+      connected: true
     };
 
     this.setGridSize = this.setGridSize.bind(this);
@@ -60,7 +63,8 @@ class GameView extends React.Component<IProps, IState> {
                 <Col xs="12">
                   <Button color="primary" className={this.state.gameRunning ? 'hidden' : ''} onClick={this.onPlay}>Play</Button>
                   <Button color="primary" className={!this.state.gameRunning ? 'hidden' : ''} onClick={this.onStop}>Stop</Button>
-                  {this.state.loggedIn ? <Button color="primary" onClick={this.saveHighscore.bind(this)}>Save Highscore</Button> : <p>Log in to save highscore</p>}
+                  {this.state.loggedIn ? <Button color="primary" onClick={this.saveHighscore.bind(this)} disabled={!this.state.connected}>Save Highscore</Button> : <p>Log in to save highscore</p>}
+                  {this.state.connected ? null : <p>Unable to connect to highscore server</p>}
                 </Col>
               </Row>
               <Row>
@@ -96,7 +100,28 @@ class GameView extends React.Component<IProps, IState> {
   }
 
   private saveHighscore(){
-    this.state.ws.send(userService.getToken()+';'+this.state.n+';'+this.state.score.toString()); 
+    //this.state.ws.send(userService.getToken()+';'+this.state.n+';'+this.state.score.toString());
+    var ws = new WebSocket('ws://localhost:4000/api');
+    
+    ws.onopen = () => {
+      console.log('websocket connected');
+      this.setState({connected: true});
+      ws.send(userService.getToken()+';'+this.state.n+';'+this.state.score.toString());
+    }
+
+    ws.onerror = err => {
+      console.error("websocket error: " + err.timeStamp);
+      this.setState({connected: false});
+      ws.close();
+    }
+
+    ws.onclose = err => {
+      console.error("websocket closed: " + err.timeStamp);
+      this.setState({connected: false});
+      setTimeout(() => {
+        this.saveHighscore();
+      }, 1000);
+    }
   }
 
 }
